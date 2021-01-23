@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../view_models/AppProvider.dart';
 import '../commons/bottom_navbar.dart';
 import '../models/country.dart';
-import 'dart:math' as math;
 import '../commons/empty_screen.dart';
 
 class FavoriteScreen extends StatelessWidget {
@@ -56,11 +55,7 @@ class FavoriteScreen extends StatelessWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     CircleAvatar(
-                                      backgroundColor: Color(
-                                              (math.Random().nextDouble() *
-                                                      0xFFFFFF)
-                                                  .toInt())
-                                          .withOpacity(1.0),
+                                      backgroundColor: country.backgroundColor,
                                       child: Text(
                                         country.code,
                                         style: TextStyle(color: Colors.white),

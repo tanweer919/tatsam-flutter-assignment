@@ -96,11 +96,7 @@ class _CountryListState extends State<CountryList> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 CircleAvatar(
-                                  backgroundColor: Color(
-                                          (math.Random().nextDouble() *
-                                                  0xFFFFFF)
-                                              .toInt())
-                                      .withOpacity(1.0),
+                                  backgroundColor: country.backgroundColor,
                                   child: Text(
                                     country.code,
                                     style: TextStyle(color: Colors.white),
