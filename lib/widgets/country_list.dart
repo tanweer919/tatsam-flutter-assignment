@@ -153,15 +153,12 @@ class _CountryListState extends State<CountryList> {
                                             Padding(
                                               padding: const EdgeInsets.only(
                                                   left: 2.0),
-                                              child: Flexible(
-                                                fit: FlexFit.loose,
-                                                child: Text(
-                                                  '${country.name} has been added to favorite',
-                                                  style:
-                                                      TextStyle(fontSize: 15),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
+                                              child: Text(
+                                                '${country.name} has been added to favorite',
+                                                style:
+                                                    TextStyle(fontSize: 15),
+                                                overflow:
+                                                    TextOverflow.ellipsis,
                                               ),
                                             ),
                                           ],
