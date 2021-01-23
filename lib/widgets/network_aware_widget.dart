@@ -36,7 +36,7 @@ class NetworkAwareWidget extends StatelessWidget {
                   padding:
                   const EdgeInsets.only(bottom: 8.0, left: 14.0, right: 14.0),
                   child: Text(
-                    "You are offline. Please turn on your mobile data to get updates.",
+                    "Please check your connectivity.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontSize: 18,
