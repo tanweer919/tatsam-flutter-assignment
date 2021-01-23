@@ -34,6 +34,8 @@ dependencies:
   connectivity: ^0.4.9
   shared_preferences: ^0.5.7
   get_it: ^5.0.3
+  shimmer: ^1.1.1
+
 
 dev_dependencies:
   flutter_test:
@@ -80,5 +82,13 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
+  fonts:
+    - family: IBMPlexSans
+      fonts:
+        - asset: assets/fonts/IBMPlexSans-Light.ttf
+        - asset: assets/fonts/IBMPlexSans-Regular.ttf
+        - asset: assets/fonts/IBMPlexSans-Medium.ttf
+        - asset: assets/fonts/IBMPlexSans-SemiBold.ttf
+        - asset: assets/fonts/IBMPlexSans-Bold.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import '../models/country.dart';
 import '../view_models/home_view_model.dart';
 import '../view_models/AppProvider.dart';
+import 'dart:math' as math;
+import '../commons/empty_screen.dart';
+import 'country_skelton.dart';
 
 class CountryList extends StatefulWidget {
   @override
@@ -16,14 +19,15 @@ class _CountryListState extends State<CountryList> {
   @override
   void initState() {
     //Initial state of the home page
-    final HomeViewModel initialState =
+    final HomeViewModel initialHomeState =
         Provider.of<HomeViewModel>(context, listen: false);
+    final AppProvider initialAppState = Provider.of<AppProvider>(context, listen: false);
     //Fetch countries from api when countries list is not initialized
-    if (initialState.allCountries == null) {
-      initialState.loadCountries().whenComplete(() {
-        _totalNoOfCountries = initialState.allCountries.length;
+    if (initialHomeState.allCountries == null) {
+      initialHomeState.loadCountries(initialAppState.favoriteCountries).whenComplete(() {
+        _totalNoOfCountries = initialHomeState.allCountries.length;
         //Setup controller to fetch more countries on scrolling to the bottom of the screen
-        _setupScrollController(initialState);
+        _setupScrollController(initialHomeState);
       });
     }
     super.initState();
@@ -33,8 +37,8 @@ class _CountryListState extends State<CountryList> {
   Widget build(BuildContext context) {
     return Consumer<AppProvider>(
       builder: (context, appProvider, child1) => Consumer<HomeViewModel>(
-        builder: (context, model, child2) => (model.filteredCountries != null)
-            ? ListView.builder(
+        builder: (context, model, child2) => (model.allCountries != null)
+            ? (model.allCountries.length > 0) ? ListView.builder(
                 controller: _scrollController,
                 shrinkWrap: true,
                 itemCount: model.lastRetrievedIndex + 2,
@@ -66,90 +70,124 @@ class _CountryListState extends State<CountryList> {
                   Country country = model.allCountries[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 6.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      child: Container(
+                        horizontal: 8.0, vertical: 4.0),
+                    child: Container(
+                      decoration: BoxDecoration(
                         color: Colors.white,
-                        height: 60,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.orange,
-                                child: Text(
-                                  country.code,
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  child: Text(
-                                    country.name,
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  SnackBar snackBar;
-                                  if (!country.isFavorite) {
-                                    model.setFavorite(
-                                        countryCode: country.code,
-                                        isFavorite: true);
-                                    country.isFavorite = true;
-                                    appProvider.addToFavorites(country);
-                                    snackBar = SnackBar(
-                                      content: Row(
-                                        children: [
-                                          Icon(Icons.close,),
-                                          Text(
-                                              '${country.name} has been added to favorite',),
-                                        ],
-                                      ),
-                                      backgroundColor: Color(0xff5cb85c),
-                                      duration: Duration(seconds: 2),
-                                    );
-                                  } else {
-                                    model.setFavorite(
-                                        countryCode: country.code,
-                                        isFavorite: false);
-                                    country.isFavorite = false;
-                                    appProvider.removeFromFavorites(country);
-                                    snackBar = SnackBar(
-                                      content: Row(
-                                        children: [
-                                          Icon(Icons.check,),
-                                          Text(
-                                              '${country.name} has been removed from favorite',),
-                                        ],
-                                      ),
-                                      backgroundColor: Color(0xff0275d8),
-                                      duration: Duration(seconds: 2),
-                                    );
-                                  }
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBar);
-                                },
-                                child: country.isFavorite
-                                    ? Icon(Icons.favorite)
-                                    : Icon(Icons.favorite_border),
-                              )
-                            ],
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            spreadRadius: 2,
+                            blurRadius: 3,
+                            offset: Offset(0, 3), // changes position of shadow
                           ),
+                        ],
+                      ),
+                      height: 70,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
+                              child: Text(
+                                country.code,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: Text(
+                                        country.name,
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                    Text(
+                                      country.region,
+                                      style: TextStyle(fontSize: 14, color: Theme.of(context).primaryColorDark),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                SnackBar snackBar;
+                                if (!country.isFavorite) {
+                                  model.setFavorite(
+                                      countryCode: country.code,
+                                      isFavorite: true);
+                                  country.isFavorite = true;
+                                  appProvider.addToFavorites(country);
+                                  snackBar = SnackBar(
+                                    content: Row(
+                                      children: [
+                                        Icon(Icons.check, size: 25,),
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 2.0),
+                                          child: Flexible(
+                                            fit: FlexFit.loose,
+                                            child: Flexible(
+                                              fit: FlexFit.loose,
+                                              child: Text(
+                                                  '${country.name} has been added to favorite', style: TextStyle(fontSize: 16),),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    backgroundColor: Color(0xff5cb85c),
+                                    duration: Duration(seconds: 2),
+                                  );
+                                } else {
+                                  model.setFavorite(
+                                      countryCode: country.code,
+                                      isFavorite: false);
+                                  country.isFavorite = false;
+                                  appProvider.removeFromFavorites(country);
+                                  snackBar = SnackBar(
+                                    content: Row(
+                                      children: [
+                                        Icon(Icons.close, size: 25,),
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 2.0),
+                                          child: FittedBox(
+                                            fit: BoxFit.contain,
+                                            child: Text(
+                                                '${country.name} has been removed from favorite', style: TextStyle(fontSize: 16),),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    backgroundColor: Color(0xff0275d8),
+                                    duration: Duration(seconds: 2),
+                                  );
+                                }
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              },
+                              child: country.isFavorite
+                                  ? Icon(Icons.favorite, color: Theme.of(context).primaryColor,)
+                                  : Icon(Icons.favorite_border),
+                            )
+                          ],
                         ),
                       ),
                     ),
                   );
                 },
-              )
-            : Center(
-                child: CircularProgressIndicator(),
-              ),
+              ) : EmptyScreen(text: 'No country found',)
+            : CountrySkelton(),
       ),
     );
   }

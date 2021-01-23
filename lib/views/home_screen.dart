@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SafeArea(
           child: Scaffold(
             bottomNavigationBar: BottomNavbar(),
-            backgroundColor: Color(0xfff1f1f1),
+            backgroundColor: Colors.white,
             body: CountryList(),
           ),
         ),

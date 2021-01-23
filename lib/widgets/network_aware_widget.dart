@@ -9,6 +9,7 @@ class NetworkAwareWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<NetworkStatus>(
       builder: (context, model, oldChild) {
+        //If network status in online, display widget as child otherwise display no internet screen
         return (model == NetworkStatus.offline) ? Scaffold(
           bottomNavigationBar: BottomNavbar(),
           body: Center(

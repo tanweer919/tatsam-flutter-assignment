@@ -9,13 +9,16 @@ class NetworkStatusService {
       StreamController<NetworkStatus>();
 
   NetworkStatusService() {
+    //Listen to connectivity change
     Connectivity().onConnectivityChanged.listen((status) async {
+      //On change, add current network status to network stream controller
       networkStatusController.add(await _getNetworkStatus(status));
     });
   }
 
   Future<NetworkStatus> _getNetworkStatus(ConnectivityResult status) async {
     final result = await DataConnectionChecker().hasConnection;
+    //Return true when either of mobile or wifi connection is available
     return (status == ConnectivityResult.mobile ||
                 status == ConnectivityResult.wifi) &&
             result
